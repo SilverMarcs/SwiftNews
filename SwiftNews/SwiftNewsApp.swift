@@ -11,7 +11,7 @@ import SwiftUI
 struct SwiftNewsApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ArticleRowView(article: .previewData[1])
         }
     }
 }
