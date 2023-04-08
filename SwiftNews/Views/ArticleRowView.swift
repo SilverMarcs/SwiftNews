@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ArticleRowView: View {
     
+    let imageRadius = 10
     let article: Article
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -26,6 +27,7 @@ struct ArticleRowView: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fill)
+                        .cornerRadius(CGFloat(imageRadius))
                     
                 case .failure:
                     HStack {
@@ -41,16 +43,19 @@ struct ArticleRowView: View {
             }
             .frame(minWidth: 300, minHeight: 200)
             .background(Color.gray.opacity(0.30))
+            .cornerRadius(CGFloat(imageRadius))
             .clipped()
             
             VStack(alignment: .leading, spacing: 8) {
-                Text(article.title!)
+                Text(article.titleText)
                     .font(.headline)
                     .lineLimit(3)
                 
                 Text(article.descriptionText)
                     .font(.subheadline)
                     .lineLimit(2)
+                
+                Spacer(minLength: 5)
                 
                 HStack {
                     Text(article.captionText)
@@ -63,18 +68,8 @@ struct ArticleRowView: View {
                     Button {
                         
                     } label: {
-                        Image(systemName: "bookmark")
+                        Image(systemName: "ellipsis")
                     }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.capsule)
-                    
-                    Button {
-                        
-                    } label: {
-                        Image(systemName: "square.and.arrow.up")
-                    }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.capsule)
                 }
             }
         }
@@ -86,7 +81,7 @@ struct ArticleRowView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             List {
-                ArticleRowView(article: .previewData[0])
+                ArticleRowView(article: .previewData[1])
                     .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
             }
             .listStyle(.plain)

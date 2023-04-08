@@ -20,6 +20,10 @@ struct Article {
     let description: String?
     let urlToImage: String?
     
+    var titleText: String {
+        title ?? ""
+    }
+    
     var authorText: String {
         author ?? ""
     }
