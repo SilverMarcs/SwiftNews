@@ -65,11 +65,19 @@ struct ArticleRowView: View {
                     
                     Spacer()
                     
-                    Button {
-                        
+                    Menu {
+                         Button(action: {}) {
+                            Label("Bookmark", systemImage: "bookmark")
+                         }
+                         
+                         Button(action: {}) {
+                            Label("Share", systemImage: "square.and.arrow.up")
+                         }
                     } label: {
                         Image(systemName: "ellipsis")
+                            .foregroundColor(.secondary)
                     }
+                    .padding(.trailing)
                 }
             }
         }
