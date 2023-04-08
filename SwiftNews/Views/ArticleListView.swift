@@ -23,8 +23,9 @@ struct ArticleListView: View {
             .listRowInsets(.init(top: 0, leading: 0, bottom: 0, trailing: 0))
         }
         .listStyle(.plain)
-        .sheet(item: $selectedArticle) {
-            SafariView(url: $0.articleURL)
+        .fullScreenCover(item: $selectedArticle) { selectedUrl in
+            SafariView(url: selectedUrl.articleURL)
+                .ignoresSafeArea()
         }
     }
 }
