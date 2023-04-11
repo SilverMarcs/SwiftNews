@@ -17,11 +17,7 @@ struct SafariView: UIViewControllerRepresentable {
         
         configuration.barCollapsingEnabled = true
         configuration.entersReaderIfAvailable = true
-        
-        let sfView = SFSafariViewController(url: url, configuration: configuration)
-        sfView.dismissButtonStyle = .close
-        
-        return sfView
+        return SFSafariViewController(url: url, configuration: configuration)
     }
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

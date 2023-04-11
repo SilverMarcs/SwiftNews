@@ -55,7 +55,7 @@ struct ArticleRowView: View {
                     .font(.subheadline)
                     .lineLimit(2)
                 
-                Spacer(minLength: 5)
+                Spacer()
                 
                 HStack {
                     Text(article.captionText)
@@ -66,13 +66,15 @@ struct ArticleRowView: View {
                     Spacer()
                     
                     Menu {
+                        
                          Button(action: {}) {
                             Label("Bookmark", systemImage: "bookmark")
                          }
                          
-                         Button(action: {}) {
+                         Button(action: {presentShareSheet(url: article.articleURL)}) {
                             Label("Share", systemImage: "square.and.arrow.up")
                          }
+                        
                     } label: {
                         Image(systemName: "ellipsis")
                             .foregroundColor(.secondary)
@@ -82,6 +84,17 @@ struct ArticleRowView: View {
             }
         }
         .padding(.all)
+    }
+}
+
+// To open iOS Share Sheet modal
+extension View {
+    func presentShareSheet(url: URL) {
+        let activityVC = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        (UIApplication.shared.connectedScenes.first as? UIWindowScene)?
+            .keyWindow?
+            .rootViewController?
+            .present(activityVC, animated: true)
     }
 }
 

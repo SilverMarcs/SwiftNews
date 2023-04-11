@@ -58,6 +58,7 @@ extension Article: Identifiable {
 extension Article {
     
     static var previewData: [Article] {
+        // finds file named news.json in project
         let previewDataURL = Bundle.main.url(forResource: "news", withExtension: "json")!
         let data = try! Data(contentsOf: previewDataURL)
         
