@@ -19,6 +19,7 @@ struct EmptyPlaceHolderView: View {
                 image
                     .imageScale(.large)
                     .font(.system(size: 52))
+                    .padding(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
             }
             Text(text)
             Spacer()

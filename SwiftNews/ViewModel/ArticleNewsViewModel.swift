@@ -30,6 +30,12 @@ enum DataFetchPhase<T> {
     case failure(Error)
 }
 
+// we need this to kep track of when category was changed. we use the change oftimestamp as indicator of when to run our async function in NewsTabView
+struct FetchTaskToken: Equatable {
+    var category: Category
+    var token: Date
+}
+
 //This class is used as a view model for an Article News screen in a SwiftUI application. The phase property is used to track the current state of the data fetch operation,
 //and the selectedCategory property is used to keep track of which category the user has selected.
 //By adopting the ObservableObject protocol and marking its properties with the @Published property wrapper, this view model is able to automatically update views when changes occur
@@ -42,7 +48,7 @@ enum DataFetchPhase<T> {
 @MainActor
 class ArticleNewsViewModel: ObservableObject {
     @Published var phase = DataFetchPhase<[Article]>.empty
-    @Published var selectedCategory: Category
+    @Published var fetchTaskToken: FetchTaskToken
     private let newsAPI = NewsAPI.sharedInstance
     
     init(articles: [Article]? = nil, selectedCategory: Category = .general) {
@@ -51,22 +57,33 @@ class ArticleNewsViewModel: ObservableObject {
         } else {
             self.phase = .empty
         }
-        self.selectedCategory = selectedCategory
+        self.fetchTaskToken = FetchTaskToken(category: selectedCategory, token: Date())
     }
     
+    
+    // if the task was cancelled, we dont want to do anything. This fixes the error overlay view when we launch app for the first time
+    // Task is tied to the lifecycle of NewTabView
+//    func loadArticles() async {
+//        if Task.isCancelled { return }
+//
+//        phase = .empty
+////        phase = .success([])   // to test no articles returned from api call
+//        do  {
+//            let articles = try await newsAPI.fetch(from: fetchTaskToken.category)
+//            if Task.isCancelled { return }
+//            // if the above line did not throw error, we set it to success
+//            phase = .success(articles)
+//        } catch {
+//            if Task.isCancelled { return }
+//            // if fails
+//            print(error.localizedDescription)
+//            phase = .failure(error)
+//        }
+//    }
+    
+    // comment out above for live fetching of data
     func loadArticles() async {
-        phase = .empty
-        
-//        phase = .success([])   // to test no articles returned from api call
-        
-        do  {
-            let articles = try await newsAPI.fetch(from: selectedCategory)
-            // if the above line did not throw error, we set it to success
-            phase = .success(articles)
-        } catch {
-            // if fails
-            phase = .failure(error)
-        }
+        phase = .success(Article.previewData)
     }
     
 }

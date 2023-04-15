@@ -9,6 +9,9 @@ import SwiftUI
 
 struct ArticleRowView: View {
     
+    // will try to get  the articleBookMarkVM from environment. If it cannot find it up its heirearchy, it will crash
+    @EnvironmentObject var articleBookmarkVM: ArticleBookmarkViewModel
+    
     let imageRadius = 10
     let article: Article
     var body: some View {
@@ -65,11 +68,23 @@ struct ArticleRowView: View {
                     
                     Spacer()
                     
+                    Button {
+                        toggleBookmark(for: article)
+                    } label: {
+                        Image(systemName: articleBookmarkVM.isBookmarked(for: article) ? "bookmark.fill" : "bookmark")
+                    }
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.roundedRectangle(radius: 15))
+                    
                     Menu {
                         
                          Button(action: {}) {
-                            Label("Bookmark", systemImage: "bookmark")
+                            Label("Show More", systemImage: "hand.thumbsup")
                          }
+                        
+                        Button(action: {}) {
+                           Label("Show Less", systemImage: "hand.thumbsdown")
+                        }
                          
                          Button(action: {presentShareSheet(url: article.articleURL)}) {
                             Label("Share", systemImage: "square.and.arrow.up")
@@ -77,14 +92,23 @@ struct ArticleRowView: View {
                         
                     } label: {
                         Image(systemName: "ellipsis")
-                            .foregroundColor(.secondary)
+                            .rotationEffect(.degrees(90))
+                            .foregroundColor(.primary)
                     }
-                    .padding(.trailing)
                 }
             }
         }
         .padding(.all)
     }
+    
+    private func toggleBookmark(for article: Article) {
+        if articleBookmarkVM.isBookmarked(for: article) {
+            articleBookmarkVM.removeBookmark(for: article)
+        } else {
+            articleBookmarkVM.addBookmark(for: article)
+        }
+    }
+    
 }
 
 // To open iOS Share Sheet modal
@@ -99,6 +123,10 @@ extension View {
 }
 
 struct ArticleRowView_Previews: PreviewProvider {
+    
+    // so this its child views have access to the env object
+    @StateObject static var articleBookmarkVM = ArticleBookmarkViewModel()
+    
     static var previews: some View {
         NavigationView {
             List {
@@ -107,5 +135,6 @@ struct ArticleRowView_Previews: PreviewProvider {
             }
             .listStyle(.plain)
         }
+        .environmentObject(articleBookmarkVM)
     }
 }

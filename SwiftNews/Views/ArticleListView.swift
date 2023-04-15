@@ -31,9 +31,13 @@ struct ArticleListView: View {
 }
 
 struct ArticleListView_Previews: PreviewProvider {
+    // so this its child row views have access to the env object
+    @StateObject static var articleBookmarkVM = ArticleBookmarkViewModel()
+    
     static var previews: some View {
         NavigationStack {
             ArticleListView(articles: Article.previewData)
+                .environmentObject(articleBookmarkVM)
         }
     }
 }

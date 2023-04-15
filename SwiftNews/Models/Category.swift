@@ -7,6 +7,7 @@
 
 import Foundation
 
+// CaseIterable so we may do Category.allCases later
 enum Category: String, CaseIterable {
     case general
     case business
