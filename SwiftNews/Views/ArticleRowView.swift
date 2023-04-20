@@ -125,7 +125,7 @@ extension View {
 struct ArticleRowView_Previews: PreviewProvider {
     
     // so this its child views have access to the env object
-    @StateObject static var articleBookmarkVM = ArticleBookmarkViewModel()
+    @StateObject static var articleBookmarkVM = ArticleBookmarkViewModel.shared
     
     static var previews: some View {
         NavigationView {

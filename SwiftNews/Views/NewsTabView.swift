@@ -102,7 +102,7 @@ struct NewsTabView: View {
 struct NewsTabView_Previews: PreviewProvider {
     
     // so this its child views have access to the env object
-    @StateObject static var articleBookmarkVM = ArticleBookmarkViewModel()
+    @StateObject static var articleBookmarkVM = ArticleBookmarkViewModel.shared
     
     static var previews: some View {
         NewsTabView(articleNewsVM: ArticleNewsViewModel(articles: Article.previewData))

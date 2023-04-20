@@ -11,6 +11,19 @@ import SwiftUI
 class ArticleBookmarkViewModel: ObservableObject {
     // means cannot be set from outside
     @Published private(set) var bookmarks: [Article] = []
+    private let bookmarkStore = PlistDataStore<[Article]>(filename: "bookmarks")
+    
+    static let shared = ArticleBookmarkViewModel()
+    
+    private init() {
+        Task {
+            await load()
+        }
+    }
+    
+    private func load() async {
+        bookmarks = await bookmarkStore.load() ?? []
+    }
     
     func isBookmarked(for article: Article) -> Bool {
         bookmarks.first { article.id == $0.id } != nil
@@ -21,6 +34,7 @@ class ArticleBookmarkViewModel: ObservableObject {
             return
         }
         bookmarks.insert(article, at: 0)
+        bookmarkUpdate()
     }
     
     func removeBookmark(for article: Article) {
@@ -28,6 +42,15 @@ class ArticleBookmarkViewModel: ObservableObject {
             return
         }
         bookmarks.remove(at: index)
+        bookmarkUpdate()
+    }
+    
+    // need to update the DataStore when we add or remove bookmark
+    private func bookmarkUpdate() {
+        let bookmarks = self.bookmarks
+        Task {
+            await bookmarkStore.save(bookmarks)
+        }
     }
     
 }
