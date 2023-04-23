@@ -20,15 +20,21 @@ struct NewsAPI {
         decoder.dateDecodingStrategy = .iso8601
         return decoder
     }
-    
-    
-    
+
 //    This function definition declares an async function fetch(from:category:) that takes a Category parameter, and returns an array of Articles.
 //    The async keyword indicates that this function is an asynchronous function that can suspend execution while waiting for an asynchronous operation to complete
 //    The throws keyword indicates that this function can throw an error if something goes wrong during the execution of the function.
     
     func fetch(from category: Category) async throws -> [Article] {
-        let url = generateNewsURL(from: category)
+        try await fetchArticles(from: generateNewsURL(from: category))
+
+    }
+    
+    func search(for query: String) async throws -> [Article] {
+        try await fetchArticles(from: generateSearchURL(from: query))
+    }
+    
+    private  func fetchArticles(from url: URL) async throws -> [Article] {
 //        await because async
         let (data, response) = try await session.data(from: url)
         
@@ -54,12 +60,20 @@ struct NewsAPI {
             throw generateError(description: "Server error")
             
         }
-        
     }
     
 //    Helper function to generate error messages
     private func generateError(code: Int = 1, description: String) -> Error {
         NSError(domain: "NewsAPI", code: code, userInfo: [NSLocalizedDescriptionKey: "description"])
+    }
+    
+    private func generateSearchURL(from query: String) -> URL {
+        let percentEncodedString = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
+        var url = "https://newsapi.org/v2/everything?"
+        url += "apiKey=\(apiKey)"
+        url += "&language=\(language)"
+        url += "&q=\(percentEncodedString)"
+        return URL(string: url)!
     }
     
     private func generateNewsURL(from category: Category) -> URL {
