@@ -17,7 +17,13 @@ struct SearchTabView: View {
                 .overlay(overlayView)
                 .navigationTitle("Search")
         }
-        .searchable(text: $searchVM.searchQuery) { suggstionsView }
+        .searchable(text: $searchVM.searchQuery) {
+            Group {
+                if searchVM.searchQuery.isEmpty {
+                    suggstionsView
+                }
+            }
+        }
         // to search api when whenpress enter or submit on keyboard
         .onChange(of: searchVM.searchQuery) { newValue in
             if newValue.isEmpty {
@@ -69,6 +75,7 @@ struct SearchTabView: View {
     
     // in the future, do this dynamically
     // The id parameter with \self is used as the identifier for each query. This is necessary when calling ForEach with an array of non-Identifiable values.
+    // Put suggestions in searchVM ideally and then recompute it everytime based on search so far
     private var suggstionsView: some View {
         ForEach(["BTC", "iOS Apps", "Gaming", "Programmning", "Tesla", "Forbes"], id: \.self) { text in
             Button {

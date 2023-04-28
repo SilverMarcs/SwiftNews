@@ -63,28 +63,28 @@ class ArticleNewsViewModel: ObservableObject {
     
     // if the task was cancelled, we dont want to do anything. This fixes the error overlay view when we launch app for the first time
     // Task is tied to the lifecycle of NewTabView
-//    func loadArticles() async {
-//        if Task.isCancelled { return }
-//
-//        phase = .empty
-////        phase = .success([])   // to test no articles returned from api call
-//        do  {
-//            let articles = try await newsAPI.fetch(from: fetchTaskToken.category)
-//            if Task.isCancelled { return }
-//            // if the above line did not throw error, we set it to success
-//            phase = .success(articles)
-//        } catch {
-//            if Task.isCancelled { return }
-//            // if fails
-//            print(error.localizedDescription)
-//            phase = .failure(error)
-//        }
-//    }
-    
-    // comment out above for live fetching of data
     func loadArticles() async {
-        phase = .success(Article.previewData)
+        if Task.isCancelled { return }
+
+        phase = .empty
+//        phase = .success([])   // to test no articles returned from api call
+        do  {
+            let articles = try await newsAPI.fetch(from: fetchTaskToken.category)
+            if Task.isCancelled { return }
+            // if the above line did not throw error, we set it to success
+            phase = .success(articles)
+        } catch {
+            if Task.isCancelled { return }
+            // if fails
+            print(error.localizedDescription)
+            phase = .failure(error)
+        }
     }
+    
+//     comment out above for live fetching of data/ comment this block for hardcoding data from news.json
+//    func loadArticles() async {
+//        phase = .success(Article.previewData)
+//    }
     
 }
 
